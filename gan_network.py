@@ -53,5 +53,35 @@ class Generator(nn.Module):
 
 		return x
 
+class Discriminator(nn.Module):
+
+	def __init__(self, in_channels, out_channels = 32, k_size = 3, stride = 1, padding = 1):
+		"""
+		
+		"""
+		super(Discriminator, self).__init__()
+		self.conv1 = nn.Conv2d(in_channels, out_channels, k_size, stride, padding)
+		self.conv2 = nn.Conv2d(out_channels, 2*out_channels, k_size, stride*2, padding)
+		self.conv3 = nn.Conv2d(2*out_channels, 4*out_channels, k_size, stride, padding)
+		self.norm1 = nn.InstanceNorm2d(4*out_channels)
+		self.conv4 = nn.Conv2d(4*out_channels, 4*out_channels, k_size, stride*2, padding)
+		self.conv5 = nn.Conv2d(4*out_channels, 8*out_channels, k_size, stride, padding)
+		self.norm2 = nn.InstanceNorm2d(8*out_channels)
+		self.conv6 = nn.Conv2d(8*out_channels, 8*out_channels, k_size, stride, padding)
+		self.norm3 = nn.InstanceNorm2d(8*out_channels)
+		self.conv7 = nn.Conv2d(8*out_channels,1,k_size,stride,padding)
+
+	def forward(self, x):
+		x = nn.LeakyReLu(self.conv1(x))
+		x = nn.LeakyReLu(self.conv2(x))
+		x = nn.LeakyReLu(self.norm1(self.conv3(x)))
+		x = nn.LeakyReLu(self.conv4(x))
+		x = nn.LeakyReLu(self.norm2(self.conv5(x)))
+		x = nn.LeakyReLu(self.norm3(self.conv6(x)))
+		x = self.conv7(x)
+
+		return x
+
+
 
 gen = Generator(3, 64, 7, 1, 1)
