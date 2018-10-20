@@ -72,12 +72,15 @@ class Discriminator(nn.Module):
 		self.conv7 = nn.Conv2d(8*out_channels,1,k_size,stride,padding)
 
 	def forward(self, x):
-		x = nn.LeakyReLu(self.conv1(x))
-		x = nn.LeakyReLu(self.conv2(x))
-		x = nn.LeakyReLu(self.norm1(self.conv3(x)))
-		x = nn.LeakyReLu(self.conv4(x))
-		x = nn.LeakyReLu(self.norm2(self.conv5(x)))
-		x = nn.LeakyReLu(self.norm3(self.conv6(x)))
+		
+		LeakyReLu = nn.LeakyReLu(0.2)
+
+		x = LeakyReLu(self.conv1(x))
+		x = LeakyReLu(self.conv2(x))
+		x = LeakyReLu(self.norm1(self.conv3(x)))
+		x = LeakyReLu(self.conv4(x))
+		x = LeakyReLu(self.norm2(self.conv5(x)))
+		x = LeakyReLu(self.norm3(self.conv6(x)))
 		x = self.conv7(x)
 
 		return x
